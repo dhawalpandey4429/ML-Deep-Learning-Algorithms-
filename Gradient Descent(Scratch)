@@ -1,0 +1,82 @@
+ import numpy as np
+ import matplotlib.pyplot as plt
+
+ # Define the cost function (example: y = x^2)
+ def cost_function(x):
+  """
+  Calculates the cost (or error) for a given value of x.
+  In this simple example, the cost function is x^2.  The goal of gradient
+  descent is to find the x that minimizes this cost.
+
+  Args:
+  x (float or numpy.ndarray): The input value(s) for which to calculate the cost.
+
+  Returns:
+  float or numpy.ndarray: The cost (x^2) corresponding to the input value(s).
+  """
+  return x**2
+
+ # Define the gradient of the cost function (derivative of x^2 is 2x)
+ def gradient(x):
+  """
+  Calculates the gradient (derivative) of the cost function at a given point x.
+  The gradient indicates the direction of the steepest ascent of the cost function.
+  Since we want to *minimize* the cost, we move in the *opposite* direction of the gradient.
+
+  Args:
+  x (float or numpy.ndarray): The point at which to calculate the gradient.
+
+  Returns:
+  float or numpy.ndarray: The gradient of the cost function at x (which is 2*x).
+  """
+  return 2*x
+
+ # Gradient Descent Function
+ def gradient_descent(learning_rate, iterations, start_point):
+  """
+  Implements the gradient descent algorithm to find the minimum of the cost function.
+
+  Args:
+  learning_rate (float):  Determines the size of the steps taken during each iteration.
+  A smaller learning rate leads to slower but potentially more accurate convergence.
+  A larger learning rate can lead to faster convergence but may overshoot the minimum.
+
+  iterations (int): The number of times to perform the gradient descent update step.
+
+  start_point (float): The initial guess for the value of x that minimizes the cost function.
+
+  Returns:
+  list: A list containing the history of x values during the gradient descent process.
+  This allows us to visualize the path taken by the algorithm.
+  """
+  x = start_point # Initial guess
+  history = [x] # Store the history of x values for visualization
+  for i in range(iterations):
+      grad = gradient(x) # Calculate the gradient
+      x = x - learning_rate * grad # Update x: move in the opposite direction of the gradient
+      history.append(x) # Store the new x value
+      return history
+
+ # Parameters
+ learning_rate = 0.1 # Adjust this to control the step size
+ iterations = 30 # Adjust this to control the number of iterations
+ start_point = 4 # Adjust this to change the initial guess
+
+ # Run Gradient Descent
+ history = gradient_descent(learning_rate, iterations, start_point)
+ x_values = np.linspace(-5, 5, 100) # Create a range of x values for plotting the cost function
+ y_values = cost_function(x_values) # Calculate the corresponding cost values
+
+ # Visualization
+ plt.figure(figsize=(10, 6)) # Create a figure for the plot
+ plt.plot(x_values, y_values, label='Cost Function (x^2)') # Plot the cost function
+ plt.scatter(history, [cost_function(i) for i in history], color='red', label='Gradient Descent Path') # Plot the path taken by gradient descent
+ plt.xlabel('x') # Label the x-axis
+ plt.ylabel('Cost (x^2)') # Label the y-axis
+ plt.title('Gradient Descent Visualization') # Set the title of the plot
+ plt.legend() # Show the legend
+ plt.grid(True) # Add a grid to the plot
+ plt.show() # Display the plot
+
+ print("Final x value:", history[-1]) # Print the final x value after gradient descent
+ print("Final cost value:", cost_function(history[-1])) # Print the cost at the final x value
