@@ -1,0 +1,71 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 1. DATASET LOADING AND EXPLORATION
+# We'll create a synthetic dataset for demonstration
+np.random.seed(0)
+X = 2 * np.random.rand(100, 1)  # 100 samples, one feature
+y = 4 + 3 * X + np.random.randn(100, 1)  # y = 4 + 3x + noise
+
+# Convert to pandas DataFrame for easy exploration
+df = pd.DataFrame({'Feature': X.flatten(), 'Label': y.flatten()})
+
+print("First 5 rows of the dataset:")
+print(df.head())
+
+# 2. DATA VISUALIZATION
+plt.scatter(df['Feature'], df['Label'], color='blue')
+plt.title('Feature vs Label')
+plt.xlabel('Feature')
+plt.ylabel('Label')
+plt.show()
+
+# 3. FEATURE AND LABEL EXTRACTION
+# Features (X) and Labels (y) are common ML terms.
+X = df[['Feature']].values  # Feature matrix
+y = df['Label'].values      # Target vector
+
+# 4. TRAIN-TEST SPLIT
+# Split the data into training and testing sets (80/20 split)
+split_index = int(0.8 * len(df))
+X_train, X_test = X[:split_index], X[split_index:]
+y_train, y_test = y[:split_index], y[split_index:]
+
+print(f"\nTraining samples: {len(X_train)}, Testing samples: {len(X_test)}")
+
+# 5. LINEAR REGRESSION (BASIC WITH NUMPY)
+# We'll use the Normal Equation for Linear Regression: theta = (X^T X)^(-1) X^T y
+
+# Add bias (intercept) term to X
+X_b = np.c_[np.ones((X_train.shape[0], 1)), X_train]  # add x0 = 1 to each instance
+
+# Calculate theta (parameters)
+theta_best = np.linalg.inv(X_b.T.dot(X_b)).dot(X_b.T).dot(y_train)
+print(f"\nEstimated coefficients (theta): {theta_best}")
+
+# 6. PREDICTION
+X_test_b = np.c_[np.ones((X_test.shape[0], 1)), X_test]
+y_pred = X_test_b.dot(theta_best)
+
+# 7. EVALUATION (MEAN SQUARED ERROR)
+mse = np.mean((y_test - y_pred) ** 2)
+print(f"\nMean Squared Error on test set: {mse:.2f}")
+
+# 8. VISUALIZATION OF THE REGRESSION LINE
+plt.scatter(X_test, y_test, color='blue', label='Test Data')
+plt.plot(X_test, y_pred, color='red', linewidth=2, label='Regression Line')
+plt.title('Linear Regression Fit')
+plt.xlabel('Feature')
+plt.ylabel('Label')
+plt.legend()
+plt.show()
+
+# TERMINOLOGY EXPLAINED IN-CODE:
+# - Feature: Independent variable (input to model)
+# - Label/Target: Dependent variable (output we want to predict)
+# - Training set: Data used to fit the model
+# - Test set: Data used to evaluate model performance
+# - Linear Regression: Model that fits a line to minimize error
+# - Coefficient/Theta: Parameters the model learns
+# - Mean Squared Error (MSE): Common metric for regression accuracy
