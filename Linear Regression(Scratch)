@@ -1,0 +1,76 @@
+import numpy as np
+import matplotlib.pyplot as plt  # Import matplotlib for visualization
+
+class LinearRegression:
+    def __init__(self):
+        # Initialize weights and bias to None
+        self.weights = None
+        self.bias = None
+
+    def fit(self, X, y, lr=0.01, epochs=1000):
+        """
+        Fit Linear Regression model using gradient descent.
+
+        Parameters:
+        X (np.ndarray): Training data of shape (n_samples, n_features)
+        y (np.ndarray): Target values of shape (n_samples,)
+        lr (float): Learning rate
+        epochs (int): Number of iterations
+        """
+        n_samples, n_features = X.shape  # Get the number of samples and features
+        self.weights = np.zeros(n_features)  # Initialize weights to zeros
+        self.bias = 0  # Initialize bias to zero
+
+        # Gradient descent loop
+        for _ in range(epochs):
+            y_pred = np.dot(X, self.weights) + self.bias  # Calculate predictions
+            # Compute gradients
+            dw = (1 / n_samples) * np.dot(X.T, (y_pred - y))
+            db = (1 / n_samples) * np.sum(y_pred - y)
+
+            # Update parameters
+            self.weights -= lr * dw
+            self.bias -= lr * db
+
+    def predict(self, X):
+        """
+        Predict using the trained Linear Regression model.
+
+        Parameters:
+        X (np.ndarray): Data of shape (n_samples, n_features)
+
+        Returns:
+        np.ndarray: Predicted values
+        """
+        # Return the predicted values using the learned weights and bias
+        return np.dot(X, self.weights) + self.bias
+
+if __name__ == "__main__":
+    # Example usage
+    # Generate simple linear data
+    X = 2 * np.random.rand(100, 1)  # 100 points between 0 and 2
+    y = 4 + 3 * X.flatten() + np.random.randn(100)  # y = 4 + 3x + noise
+
+    # Visualize the generated data points
+    plt.scatter(X, y, color='blue', label='Data points')
+    plt.xlabel('X')
+    plt.ylabel('y')
+    plt.title('Generated Linear Data')
+    plt.legend()
+    plt.show()
+
+    model = LinearRegression()
+    model.fit(X, y, lr=0.05, epochs=2000)  # Train the model
+    predictions = model.predict(X)  # Predict on training data
+
+    print("Weights:", model.weights)
+    print("Bias:", model.bias)
+
+    # Visualize the regression line along with the data points
+    plt.scatter(X, y, color='blue', label='Data points')
+    plt.plot(X, predictions, color='red', label='Regression line')
+    plt.xlabel('X')
+    plt.ylabel('y')
+    plt.title('Linear Regression Fit')
+    plt.legend()
+    plt.show()
