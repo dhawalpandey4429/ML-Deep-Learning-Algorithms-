@@ -1,0 +1,63 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Load the Iris dataset
+data = load_iris()
+X = data.data
+y = data.target
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# Create and train the Random Forest model
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = rf.predict(X_test)
+
+# Evaluate accuracy
+acc = accuracy_score(y_test, y_pred)
+print("Accuracy:", acc)
+
+# Generate confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+# Plot confusion matrix as a heatmap
+plt.figure(figsize=(6, 4))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=data.target_names, yticklabels=data.target_names)
+plt.title("Confusion Matrix")
+plt.ylabel("Actual")
+plt.xlabel("Predicted")
+plt.show()
+
+# Feature importance visualization
+feature_importances = rf.feature_importances_
+plt.figure(figsize=(8, 4))
+sns.barplot(x=data.feature_names, y=feature_importances)
+plt.title("Feature Importances")
+plt.ylabel("Importance")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# Print classification report
+print("Classification Report:\n", classification_report(y_test, y_pred, target_names=data.target_names))
+
+# ---------------------------
+# CODE COMMENTS:
+# ---------------------------
+# 1. We load the Iris dataset, a classic multiclass classification problem.
+# 2. Data is split into training and test sets for model evaluation.
+# 3. RandomForestClassifier is initialized and trained on the training data.
+# 4. Predictions are made on the test data.
+# 5. Accuracy of the model is printed.
+# 6. Confusion matrix is calculated and visualized using seaborn's heatmap.
+# 7. Feature importances (which features are most useful for prediction) are visualized.
+# 8. A detailed classification report (precision, recall, f1-score) is printed for further analysis.
